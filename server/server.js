@@ -435,6 +435,10 @@ app.use(function (req, res, next) {
                     }
                 }
 
+                monitor.site_checks_config = JSON.stringify(
+                    require("./site-checks").normalizeConfig(monitor.siteChecks)
+                );
+                delete monitor.siteChecks;
                 bean.import(monitor);
                 // Map camelCase frontend property to snake_case database column
                 if (monitor.retryOnlyOnStatusCodeFailure !== undefined) {
@@ -546,6 +550,7 @@ app.use(function (req, res, next) {
                 bean.ignoreTls = monitor.ignoreTls;
                 bean.expiryNotification = monitor.expiryNotification;
                 bean.domainExpiryNotification = monitor.domainExpiryNotification;
+                bean.site_checks_config = JSON.stringify(require("./site-checks").normalizeConfig(monitor.siteChecks));
                 bean.upsideDown = monitor.upsideDown;
                 bean.packetSize = monitor.packetSize;
                 bean.maxredirects = monitor.maxredirects;
