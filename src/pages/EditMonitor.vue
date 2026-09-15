@@ -1822,6 +1822,11 @@
                                 </div>
                             </div>
 
+                            <SiteCheckSettings
+                                v-if="['http', 'keyword', 'json-query', 'real-browser'].includes(monitor.type)"
+                                v-model="monitor.siteChecks"
+                            />
+
                             <div v-if="showDomainExpiryNotification" class="my-3 form-check">
                                 <input
                                     id="domain-expiry-notification"
@@ -3314,6 +3319,7 @@
 </template>
 
 <script>
+import SiteCheckSettings from "../components/SiteCheckSettings.vue";
 import VueMultiselect from "vue-multiselect";
 import { useToast } from "vue-toastification";
 import ActionSelect from "../components/ActionSelect.vue";
@@ -3421,6 +3427,7 @@ const monitorDefaults = {
 
 export default {
     components: {
+        SiteCheckSettings,
         HiddenInput,
         ActionSelect,
         ProxyDialog,

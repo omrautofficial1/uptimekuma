@@ -42,6 +42,23 @@ function getGameList() {
  * @returns {void}
  */
 module.exports.generalSocketHandler = (socket, server) => {
+    socket.on("getSiteChecks", async (monitorID, callback) => {
+        try {
+            checkLogin(socket);
+            const { R } = require("redbean-node");
+            const monitor = await R.findOne("monitor", "id = ? AND user_id = ?", [monitorID, socket.userID]);
+            if (!monitor) {
+                throw new Error("Monitor not found");
+            }
+            const row = await R.findOne("site_check", "monitor_id = ?", [monitorID]);
+            const config = require("../site-checks").normalizeConfig(monitor.site_checks_config);
+            const target = JSON.stringify([monitor.url, config]);
+            callback({ ok: true, result: row?.target === target ? JSON.parse(row.result) : null });
+        } catch (error) {
+            callback({ ok: false, msg: error.message });
+        }
+    });
+
     socket.on("initServerTimezone", async (timezone) => {
         try {
             checkLogin(socket);

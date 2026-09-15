@@ -301,6 +301,15 @@
                 </div>
             </transition>
 
+            <SiteChecks
+                v-if="
+                    monitor.siteChecks?.enabled &&
+                    ['http', 'keyword', 'json-query', 'real-browser'].includes(monitor.type)
+                "
+                :key="monitor.id"
+                :monitor="monitor"
+            />
+
             <!-- Ping Chart -->
             <div v-if="showPingChartBox" class="shadow-box big-padding text-center ping-chart-wrapper">
                 <div class="row">
@@ -437,6 +446,7 @@
 </template>
 
 <script>
+import SiteChecks from "../components/SiteChecks.vue";
 import { defineAsyncComponent } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
@@ -465,6 +475,7 @@ import ScreenshotDialog from "../components/ScreenshotDialog.vue";
 
 export default {
     components: {
+        SiteChecks,
         Uptime,
         CountUp,
         Datetime,

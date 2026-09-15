@@ -153,6 +153,7 @@ class Monitor extends BeanModel {
             invertKeyword: this.isInvertKeyword(),
             expiryNotification: this.isEnabledExpiryNotification(),
             domainExpiryNotification: Boolean(this.domainExpiryNotification),
+            siteChecks: require("../site-checks").normalizeConfig(this.site_checks_config),
             ignoreTls: this.getIgnoreTls(),
             upsideDown: this.isUpsideDown(),
             packetSize: this.packetSize,
@@ -1006,6 +1007,13 @@ class Monitor extends BeanModel {
                     }
                 }
             }
+
+            // Site inventory runs independently so slow DNS/RDAP cannot delay uptime heartbeats.
+            require("../site-check-runner")
+                .runSiteChecks(this)
+                .catch((error) => {
+                    log.error("site-checks", `[${this.name}] ${error.message}`);
+                });
 
             if (bean.status !== MAINTENANCE && Boolean(this.domainExpiryNotification)) {
                 try {
